@@ -1,0 +1,172 @@
+﻿@model RareNFTs.Web.ViewModels.ViewModelClientNft
+
+@{
+    ViewData["Title"] = "ChangeOwner";
+}
+
+<h1>ChangeOwner</h1>
+
+<h4>ViewModelClientNft</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+            <form asp-action="ChangeOwner" 
+                  data-ajax="true"
+                  data-ajax-method="POST"
+                  data-ajax-begin="onBegin"
+                  data-ajax-failure="onFailure"
+                  data-ajax-success="onSuccess"
+                  data-ajax-complete="onComplete"
+                  asp-antiforgery="true">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdClient" class="control-label"></label>
+                <input asp-for="IdClient" class="form-control" />
+                <span asp-validation-for="IdClient" class="text-danger"></span>
+                <label id="ClientName" class="control-label fw-bold">-</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" readOnly />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" readOnly />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdNft" class="control-label"></label>
+                <input asp-for="IdNft" class="form-control" readOnly />
+                <span asp-validation-for="IdNft" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" readOnly />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" readOnly />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>            
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" readOnly/>
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Current Image</label>
+                <img id="currentImage" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Image)" class="img-thumbnail" />
+            </div>
+        
+
+            <div class="d-flex  align-content-center pt-4">
+
+                <button class="btn gradient-btn rounded-full" type="submit" value="Save">Save</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<div id="message"></div>
+<br />
+
+<div id="loader" class="spinnerx">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div>
+    <a asp-action="ListOwned">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+
+        ////////////////////////////////////////////////////
+        // Busca el cliente por nombre+apellido1+apellido2 //
+        /////////////////////////////////////////////////////
+
+        $("#IdClient").autocomplete({
+            source: function (request, response) {
+                var IdClient = $("#IdClient").val();
+                //debugger;
+                console.log(IdClient);
+                $.ajax({
+                    type: "GET",
+                    url: "/Client/GetClientByName",
+                    dataType: "json",
+                    data: { filtro: IdClient },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            console.log(item);
+                            //debugger;
+                            console.log(item.id);
+                            return { label: item.name + " " + item.surname, value: item.id };
+
+
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        // xhr.requestText
+                        // debugger;
+                        console.log(error)
+                        alert("Error: " + error + ", No Error: " + xhr.status);
+                    },
+                });
+            },
+            select: function (event, ui) {
+
+                $("#IdClient").val(ui.item.value);
+                $("#ClientName").html(ui.item.label)
+
+                return false;
+            }
+        });
+
+        </script>
+
+
+        <script>
+            function onBegin() {
+                console.log("onBegin");
+                setTimeout(function () {
+                    document.getElementById("loader").className = "spinner";
+
+                    setTimeout(function () {
+                    window.location.href = "ListOwned"; // Asegúrate de que esta ruta es correcta
+                    }, 1000);
+                }, 1000);
+            }
+
+        function onFailure(response) {
+            console.log("onFailure");
+            document.getElementById("loader").className = "";
+        }
+
+        function onSuccess(response) {
+            console.log("onSuccess");
+            Swal.fire({
+                icon: 'success',
+                title: '¡Success!',
+                text: 'Completed!',
+                showConfirmButton: false,
+                timer: 2000, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true // muestra una barra de progreso que se llena conforme pasa el tiempo
+            });
+        }
+
+        function onComplete() {
+            console.log("onComplete");
+            document.getElementById("loader").className = "";
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

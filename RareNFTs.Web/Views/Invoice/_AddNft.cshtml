@@ -1,0 +1,51 @@
+﻿@model RareNFTs.Web.ViewModels.ViewModelInput
+
+
+
+
+<div class="row" id="MyAddProduct">
+    <div class="col-md-4">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+
+            <label asp-for="Id" name="IdNft" class="control-label"></label>
+            <input asp-for="Id" id="IdNft" type="text" autocomplete="off" class="form-control  form-control-sm" />
+            <label id="NftModal" name="NftModal" class="fw-bold">-</label>
+            <span asp-validation-for="Id" class="text-danger"></span>
+            <!--Hidden field with stock-->
+            <input type="hidden" id="InventoryModal" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Quantity" class="control-label"></label>
+            <input asp-for="Quantity" id="quantityModal" type="number" class="form-control form-control-sm" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" id="PriceModal" readonly type="number" class="form-control  form-control-sm" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <br />
+        <!--Call JavaScript addProducto -->
+
+        <div class="d-flex  align-content-center pt-4">
+            <button class="btn gradient-btn rounded-full"  type="submit" onclick="addProduct()" value="Add Product">Add Product</button>
+        </div>
+
+    </div>
+    <div class="col-md-4 text-center">
+        <img src="/Images/nophoto.jpg" class="img-responsive" style="height:80%;width:80%" id="ImgNft">
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

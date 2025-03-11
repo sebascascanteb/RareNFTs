@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RareNFTs.Web", "RareNFTs.Web\RareNFTs.Web.csproj", "{8373C901-6C55-4524-8495-6696739BF179}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RareNFTs.Application", "RareNFTs.Application\RareNFTs.Application.csproj", "{395198F2-00FC-4679-AD78-E491717C2D5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RareNFTs.Infraestructure", "RareNFTs.Infraestructure\RareNFTs.Infraestructure.csproj", "{3C05F7F9-F6EB-4ACE-8D73-74F2BBAEF98A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RareNFTs.Console", "RareNFTs.Console\RareNFTs.Console.csproj", "{398B8B63-D252-436B-AAF4-08168969226F}"
+EndProject
+<<<<<<< HEAD
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RareNFTs.API", "RareNFTs.API\RareNFTs.API.csproj", "{1430B857-13F5-4D17-9211-B1160F3B8C78}"
+EndProject
+>>>>>>> a1a6185a099edfadb4af0a736fc4d17bb638a69f
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8373C901-6C55-4524-8495-6696739BF179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8373C901-6C55-4524-8495-6696739BF179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8373C901-6C55-4524-8495-6696739BF179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8373C901-6C55-4524-8495-6696739BF179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{395198F2-00FC-4679-AD78-E491717C2D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{395198F2-00FC-4679-AD78-E491717C2D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{395198F2-00FC-4679-AD78-E491717C2D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{395198F2-00FC-4679-AD78-E491717C2D5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C05F7F9-F6EB-4ACE-8D73-74F2BBAEF98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C05F7F9-F6EB-4ACE-8D73-74F2BBAEF98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C05F7F9-F6EB-4ACE-8D73-74F2BBAEF98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C05F7F9-F6EB-4ACE-8D73-74F2BBAEF98A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{398B8B63-D252-436B-AAF4-08168969226F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{398B8B63-D252-436B-AAF4-08168969226F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{398B8B63-D252-436B-AAF4-08168969226F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{398B8B63-D252-436B-AAF4-08168969226F}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
+=======
+		{1430B857-13F5-4D17-9211-B1160F3B8C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1430B857-13F5-4D17-9211-B1160F3B8C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1430B857-13F5-4D17-9211-B1160F3B8C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1430B857-13F5-4D17-9211-B1160F3B8C78}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> a1a6185a099edfadb4af0a736fc4d17bb638a69f
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DF5513F0-F6A9-4027-80C6-568D071E21D6}
+	EndGlobalSection
+EndGlobal

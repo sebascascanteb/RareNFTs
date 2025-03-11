@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Sales Chart";
+}
+
+<div class="container">
+    <div class="card">
+        <h5 class="card-header">Sales by Date Range</h5>
+        <div class="card-body">
+            <form class="row g-3" asp-action="GraphicSalesDateRange"
+                  asp-controller="Graphic"
+                  asp-antiforgery="true"
+                  method="post"
+                  asp-antiforgery="true" onsubmit="return validateForm()">
+                <div class="col-3">
+                    <label for="StartDate" class="form-label">Start Date:</label>
+                    <input type="date" class="form-control" id="StartDate" name="StartDate" required>
+                </div>
+                <div class="col-3">
+                    <label for="EndDate" class="form-label">End Date:</label>
+                    <input type="date" class="form-control" id="EndDate" name="EndDate" required>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success">Consult</button>
+                </div>
+            </form>
+            <br />
+            @if (@ViewBag.Message != null)
+            {
+                <!-- start single alert -->
+                <div class="alert alert-error-light d-flex align-items-center mt-4">
+                    <div class="alert-icon">
+                        <i class="lni lni-play"></i>
+                    </div>
+                    <div class="alert-message">
+                        <h5 class="message-title">Error</h5>
+                        <p class="text">
+                            @ViewBag.Message
+                        </p>
+                    </div>
+                </div>
+                <!-- end single alert -->
+            }
+        </div>
+
+        <div class="container p-10">
+            <div class="chart-container" style="position: relative; height:60vh; width:80vw">
+                <canvas id="myChart1"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            var valores = @Html.Raw(Json.Serialize(ViewBag.Valores));
+            var etiquetas = @Html.Raw(Json.Serialize(ViewBag.Etiquetas));
+            var graphTitle = @Html.Raw(Json.Serialize(ViewBag.GraphTitle));
+            if (valores.length > 0 && etiquetas.length > 0) {
+                var ctx = document.getElementById('myChart1').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: etiquetas,
+                        datasets: [{
+                            label: graphTitle,
+                            data: valores,
+                            borderWidth: 1,
+                            backgroundColor: 'rgba(151, 93, 236, 0.2)',
+                            borderColor: 'rgb(151, 93, 236)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        });
+
+
+        function validateForm() {
+            var startDate = document.getElementById("StartDate").value;
+            var endDate = document.getElementById("EndDate").value;
+
+            if (startDate === "" || endDate === "") {
+                alert("Both start date and end date must be selected.");
+                return false;
+            }
+
+
+            return true;
+        }
+    </script>
+}

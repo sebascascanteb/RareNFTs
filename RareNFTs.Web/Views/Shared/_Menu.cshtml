@@ -1,0 +1,188 @@
+﻿@using System.Security.Claims
+<!--====== NAVBAR ONE PART START ======-->
+<section class="navbar-area navbar-one shadow">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <nav class="navbar navbar-expand-lg navbar-dark">
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                        <img src="~/Images/logo.png" alt="Logo" width="200px" />
+                    </a>
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarOne"
+                            aria-controls="navbarOne"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="toggler-icon"></span>
+                        <span class="toggler-icon"></span>
+                        <span class="toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse sub-menu-bar" id="navbarOne">
+
+                        <ul class="navbar-nav m-auto">
+                            @if (User.IsInRole("admin") == true || User.IsInRole("process") == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="page-scroll"
+                                       data-bs-toggle="collapse"
+                                       data-bs-target="#sub-nav1"
+                                       aria-controls="sub-nav1"
+                                       aria-expanded="false"
+                                       aria-label="Toggle navigation"
+                                       href="javascript:void(0)">
+                                        Maintenance
+                                        <div class="sub-nav-toggler">
+                                            <span><i class="lni lni-chevron-down"></i></span>
+                                        </div>
+                                    </a>
+                                    <ul class="sub-menu collapse" id="sub-nav1">
+                                        <li><a href="@Url.Action("Index", "NFT")">NFT</a></li>
+                                        <li><a href="@Url.Action("Index", "Client")">Client</a></li>
+                                        <li><a href="@Url.Action("Index", "Card")">Card</a></li>
+                                        <li><a href="@Url.Action("Index", "Country")">Country</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("admin") == true || User.IsInRole("process") == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="page-scroll"
+                                       data-bs-toggle="collapse"
+                                       data-bs-target="#sub-nav2"
+                                       aria-controls="sub-nav2"
+                                       aria-expanded="false"
+                                       aria-label="Toggle navigation"
+                                       href="javascript:void(0)">
+                                        Process
+                                        <div class="sub-nav-toggler">
+                                            <span><i class="lni lni-chevron-down"></i></span>
+                                        </div>
+                                    </a>
+                                    <ul class="sub-menu collapse" id="sub-nav2">
+                                        <li><a href="@Url.Action("Index", "Invoice")">Invoice</a></li>
+                                        <li><a href="@Url.Action("ListActives", "Invoice")">Cancel Invoice</a></li>
+                                        <li><a href="@Url.Action("ListOwned", "Nft")">Change NFT owner</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("admin") == true || User.IsInRole("report") == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="page-scroll"
+                                       data-bs-toggle="collapse"
+                                       data-bs-target="#sub-nav3"
+                                       aria-controls="sub-nav3"
+                                       aria-expanded="false"
+                                       aria-label="Toggle navigation"
+                                       href="javascript:void(0)">
+                                        Reports
+                                        <div class="sub-nav-toggler">
+                                            <span><i class="lni lni-chevron-down"></i></span>
+                                        </div>
+                                    </a>
+                                    <ul class="sub-menu collapse" id="sub-nav3">
+                                        <li><a href="@Url.Action("ProductReport", "Report")">NFTs</a></li>
+                                        <li><a href="@Url.Action("ClientReport", "Report")">Clients</a></li>
+                                        <li><a href="@Url.Action("OwnerNftReport", "Report")">Client by NFT</a></li>
+                                        <li><a href="@Url.Action("SalesReport", "Report")">Sales</a></li>
+                                        <li><hr class="dropdown-divider text-light"></li>
+                                        <li><a href="@Url.Action("GraphicSalesDateRange", "Graphic")">Graphic Sales Date Range</a></li>
+
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("admin") == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="page-scroll"
+                                       data-bs-toggle="collapse"
+                                       data-bs-target="#sub-nav4"
+                                       aria-controls="sub-nav4"
+                                       aria-expanded="false"
+                                       aria-label="Toggle navigation"
+                                       href="javascript:void(0)">
+                                        Administration
+                                        <div class="sub-nav-toggler">
+                                            <span><i class="lni lni-chevron-down"></i></span>
+                                        </div>
+                                    </a>
+                                    <ul class="sub-menu collapse" id="sub-nav4">
+                                        <li><a href="@Url.Action("Index", "User")">Security</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+
+                            <li class="nav-item">
+                                <a class="page-scroll"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#sub-nav5"
+                                   aria-controls="sub-nav5"
+                                   aria-expanded="false"
+                                   aria-label="Toggle navigation"
+                                   href="javascript:void(0)">
+                                    Calification
+                                    <div class="sub-nav-toggler">
+                                        <span><i class="lni lni-chevron-down"></i></span>
+                                    </div>
+                                </a>
+                                <ul class="sub-menu collapse" id="sub-nav5">
+                                    <li><a href="@Url.Action("Autoevaluation", "Home")">Autoevaluation</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+
+                                <a class="page-scroll"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#sub-nav6"
+                                   aria-controls="sub-nav6"
+                                   aria-expanded="false"
+                                   aria-label="Toggle navigation"
+                                   asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="lni lni-user fs-4"></i>
+                                    <div class="sub-nav-toggler">
+                                    </div>
+                                </a>
+
+
+                                <ul class="sub-menu collapse" id="sub-nav6">
+
+                                    <li>
+                                        <a asp-area="" asp-controller="Home"
+                                           asp-action="Index" class="text-lowercase">
+                                            @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="btn error-btn-outline" asp-controller="Login" asp-action="LogOff">Log Out</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </nav>
+                <!-- navbar -->
+            </div>
+        </div>
+        <!-- row -->
+    </div>
+    <!-- container -->
+</section>
+<!--====== NAVBAR ONE PART ENDS ======-->
+<!--====== Bootstrap js ======-->
+
+
+<script>
+    // Close navbar-collapse when a clicked
+    let navbarTogglerOne = document.querySelector(".navbar-one .navbar-toggler");
+    navbarTogglerOne.addEventListener("click", function () {
+        navbarTogglerOne.classList.toggle("active");
+    });
+</script>

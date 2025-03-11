@@ -1,0 +1,154 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IEnumerable<RareNFTs.Application.DTOs.ClientDTO>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<p>
+    <a class="btn gradient-btn rounded-full m-2" asp-action="Create"> <i class="lni lni-plus"></i> Create </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCountry)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @item.IdCountry 
+            </td>
+            <td>
+                    <div class="d-flex justify-content-center align-content-center group-buttons">
+                        <div class="btn-group">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn primary-btn rounded-full" })
+                            <a data-ajax="true" class="btn primary-btn rounded-full"
+                               data-ajax-complete="onComplete"
+                               data-ajax-mode="replace"
+                               href='@Url.Action("Details", "Client", new { id  = item.Id })'>
+                                Details
+                            </a>
+                            <button type="button" class="btn primary-btn rounded-full" onclick="deleteItem('@item.Id')">Delete</button>
+
+                        </div>
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@Html.PagedListPager((IPagedList)Model, page =>
+                    Url.Action("Index", new { page }), new PagedListRenderOptions
+                {
+                    Display = PagedListDisplayMode.Always,
+                    MaximumPageNumbersToDisplay = 5,
+                    LiElementClasses = new String[] { "page-item" },
+                    PageClasses = new String[] { "page-link" }
+                })
+<div id="showData"></div>
+
+
+@section scripts {
+
+
+    <script type="text/javascript">
+        // debugger;
+
+        function deleteItem(id) {
+            console.log("Inicio")
+            Swal.fire({
+                title: 'Are you sure you want to Delete this?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const myRequest = `/Client/Delete?id=${id}`;
+                    fetch(myRequest, {
+                        method: 'POST'
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then((text) => {
+                            console.log(text);
+                            Swal.fire('Delete successfully', '', 'success')
+                                .then(() => {
+                                    // Recarga la página solo después de mostrar el Swal de éxito
+                                    location.reload();
+                                });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            Swal.fire('Failed to Delete', 'The record may be associated with other entities.', 'error');
+                        });
+                } else if (result.isDenied) {
+                    Swal.fire('Not Deleted!', '', 'info');
+                }
+            });
+        }
+        function onComplete(data) {
+            Swal.fire({
+                title: 'Details',
+                html: data.responseText,
+                width: '800px',
+                showConfirmButton: false,
+                timer: 1500, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true, // muestra una barra de progreso que se llena conforme pasa el tiempo
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        }
+
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

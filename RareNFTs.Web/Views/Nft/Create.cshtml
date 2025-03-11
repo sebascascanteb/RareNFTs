@@ -1,0 +1,120 @@
+﻿@model RareNFTs.Application.DTOs.NftDTO
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>NFT</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-controller="Nft" enctype="multipart/form-data"
+              data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-begin="onBegin"
+              data-ajax-failure="onFailure"
+              data-ajax-success="onSuccess"
+              data-ajax-complete="onComplete"
+              asp-antiforgery="true">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" class="form-control" id="ImageFile" name="ImageFile" required />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="d-flex  align-content-center pt-4">
+
+                <button class="btn gradient-btn rounded-full" type="submit" value="Create">Create</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<div id="message"></div>
+<br />
+
+<div id="loader" class="spinnerx">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section scripts {
+
+
+    <script>
+        function onBegin() {
+            console.log("onBegin");
+            setTimeout(function () {
+                document.getElementById("loader").className = "spinner";
+
+                setTimeout(function () {
+                    window.location.href = "Index"; // Asegúrate de que esta ruta es correcta
+                }, 1000);
+            }, 1000);
+        }
+
+        function onFailure(response) {
+            console.log("onFailure");
+            document.getElementById("loader").className = "";
+        }
+
+        function onSuccess(response) {
+            console.log("onSuccess");
+            Swal.fire({
+                icon: 'success',
+                title: '¡Success!',
+                text: 'Completed!',
+                showConfirmButton: false,
+                timer: 2000, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true // muestra una barra de progreso que se llena conforme pasa el tiempo
+            });
+        }
+
+        function onComplete() {
+            console.log("onComplete");
+            document.getElementById("loader").className = "";
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

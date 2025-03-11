@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold "Server=localhost;Database=RareNFTs_db;Integrated Security=false;user id=sa;password=123456;Encrypt=false;" Microsoft.EntityFrameworkCore.SqlServer --force --output-dir Models  --context RareNFTsContext --context-dir Data --no-onconfiguring --no-pluralize

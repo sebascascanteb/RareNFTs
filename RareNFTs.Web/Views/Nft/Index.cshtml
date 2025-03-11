@@ -1,0 +1,167 @@
+﻿@model IEnumerable<RareNFTs.Application.DTOs.NftDTO>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "NFT";
+}
+
+<h1>NFT</h1>
+<p>
+    <a class="btn gradient-btn rounded-full m-2" asp-action="Create"> <i class="lni lni-plus"></i> Create </a>
+</p>
+
+<table id="sortable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @*                     <!--Show Image as Base64-->
+                *@                    <input type="image" src="data:image/jpeg;charset=utf-8;base64,@Convert.ToBase64String(item.Image)"
+                                                 id="Image" style="height:75px;width:75px" class="zoom2">
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <div class="d-flex justify-content-center align-content-center group-buttons">
+                        <div class="btn-group">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn primary-btn rounded-full" })
+                            <a data-ajax="true" class="btn primary-btn rounded-full"
+                               data-ajax-complete="onComplete"
+                               data-ajax-mode="replace"
+                               href='@Url.Action("Details", "Nft", new { id  = item.Id })'>
+                                Details
+                            </a>
+                            <button type="button" class="btn primary-btn rounded-full" onclick="deleteItem('@item.Id')">Delete</button>
+
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)Model, page =>
+                Url.Action("Index", new { page }), new PagedListRenderOptions
+            {
+                Display = PagedListDisplayMode.Always,
+                MaximumPageNumbersToDisplay = 5,
+                LiElementClasses = new String[] { "page-item" },
+                PageClasses = new String[] { "page-link" }
+            })
+
+<div id="showData"></div>
+
+
+
+
+@section scripts {
+
+
+    <script type="text/javascript">
+        // debugger;
+
+        function deleteItem(id) {
+            console.log("Inicio")
+            Swal.fire({
+                title: 'Are you sure you want to Delete this?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const myRequest = `/Nft/Delete?id=${id}`;
+                    fetch(myRequest, {
+                        method: 'POST'
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then((text) => {
+                            console.log(text);
+                            Swal.fire('Delete successfully', '', 'success')
+                                .then(() => {
+                                    // Recarga la página solo después de mostrar el Swal de éxito
+                                    location.reload();
+                                });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            Swal.fire('Failed to Delete', 'The record may be associated with other entities.', 'error');
+                        });
+                } else if (result.isDenied) {
+                    Swal.fire('Not Deleted!', '', 'info');
+                }
+            });
+        }
+
+        function onComplete(data) {
+            Swal.fire({
+                title: 'Details',
+                html: data.responseText,
+                width: '1000px',
+                showConfirmButton: false,
+                timer: 1500, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true, // muestra una barra de progreso que se llena conforme pasa el tiempo
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        }
+
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,485 @@
+﻿@using System.Text.Json
+@using RareNFTs.Application.DTOs
+@model RareNFTs.Application.DTOs.InvoiceHeaderDTO
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- OJO style requerido para que funcione Modal con Autocomplete 26-02-2024 -->
+<style>
+    ul.ui-autocomplete {
+        z-index: 1100;
+    }
+</style>
+
+<form asp-action="Create" id="myForm"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-begin="onBegin"
+      data-ajax-failure="onFailure"
+      data-ajax-success="onSuccess"
+      data-ajax-complete="onComplete">
+    <div class="card">
+        <div class="card-header">
+
+
+            <div class="d-flex  align-content-center pt-4">
+
+                <button class="btn gradient-btn rounded-full mr-2" onclick="onClearForm()" value="New">  <i class="lni lni-plus"></i>New</button>
+
+                <button type="submit" value="Save" class="btn gradient-btn rounded-full">Save </button>
+
+               
+            </div>
+      
+
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Id" class="control-label fw-normal"></label>
+                            <input asp-for="Id" class="form-control form-control-sm" value="@ViewBag.InvoiceId" readonly />
+                            <span asp-validation-for="Id" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdCard" class="control-label"></label>
+                            @Html.DropDownListFor(m => m.IdCard,
+                                     new SelectList(ViewBag.ListCard, "Id", "Description"), new { @class = "form-select form-select-sm " })
+
+                            <span asp-validation-for="IdCard" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NumCard" class="control-label"></label>
+                            <input asp-for="NumCard" class="form-control form-control-sm" />
+                            <span asp-validation-for="NumCard" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdClient" class="control-label"></label>
+                            <input asp-for="IdClient" id="IdClient" class="form-control form-control-sm" />
+                            <span asp-validation-for="IdClient" class="text-danger"></span>
+                            <label id="ClientName" class="control-label fw-bold">-</label>
+                        </div>
+
+                        <div class="d-flex  align-content-center pt-4">
+
+                        <button type="button" class="btn gradient-btn rounded-full" data-bs-toggle="modal" data-bs-target="#myModal" onclick="">Add Product</button>
+                                                </div> 
+
+                    </div>
+
+                    <div class="col-md-10">
+                        <!-- Solamente se muestra la primera vez como efecto visual-->
+                        @await Html.PartialAsync("_InvoiceDetail")
+                        <!-- Detail View -->
+                        <div id="invoiceDetailView"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+</form>
+
+<br />
+<div id="message"></div>
+<br />
+
+<div id="loader" class="spinnerx">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<!-------------------------------------- Modal ----------------------------->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">NFTs</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Etiqueta mostrar donde se inyecta el partialview-->
+                <div id="mostrar" class=""></div>
+                @await Html.PartialAsync("_AddNft")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------ Fin Modal ----------------------------->
+@section Scripts {
+    <script>
+        function onBegin() {
+            console.log("onBegin");
+            setTimeout(function () {
+                document.getElementById("loader").className = "spinner";
+
+                setTimeout(function () {
+                    window.location.href = "Index"; // Asegúrate de que esta ruta es correcta
+                }, 1000);
+            }, 1000);
+        }
+
+        function onFailure(response) {
+            console.log("onFailure");
+            document.getElementById("loader").className = "";
+        }
+
+        function onSuccess(response) {
+            console.log("onSuccess");
+            Swal.fire({
+                icon: 'success',
+                title: '¡Success!',
+                text: 'Completed!',
+                showConfirmButton: false,
+                timer: 2500, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true // muestra una barra de progreso que se llena conforme pasa el tiempo
+            });
+        }
+
+        function onComplete() {
+            console.log("onComplete");
+            document.getElementById("loader").className = "";
+        }
+    </script>
+    <script>
+        ///////////////////////////////////////////////////////////////////
+        // Autocomplete Modal NftId search by Product Name
+        ///////////////////////////////////////////////////////////////////
+        $("#IdNft").autocomplete({
+            source: function (request, response) {
+                var id = $("#IdNft").val();
+                //debugger;
+
+                // default IMAGE NO-IMAGE
+                $("#ImgNft").attr("src", "/Images/nophoto.jpg");
+                // Clear Product Name
+                $("#NftModal").html("")
+                $("#PriceModal").val("");
+                $("#Quantity").val("");
+                $("#InventoryModal").val("");
+                $.ajax({
+                    type: "GET",
+                    url: "/Nft/GetNftByName",
+                    dataType: "json",
+                    data: { filtro: id },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            //debugger;
+                            return { label: item.description, value: item.id, data: item };
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        // xhr.requestText
+                        // debugger;
+                        console.log(error)
+                        alert("Error: " + error + ", No Error: " + xhr.status);
+                    },
+                });
+            },
+            select: function (event, ui) {
+
+                // Show data
+                $("#IdNft").val(ui.item.value)
+                $("#NftModal").html(ui.item.label + " - Quantity:" + ui.item.data.quantity)
+                $("#PriceModal").val(ui.item.data.price)
+                $("#IdNft").focus();
+                // Show the image, it isn't necesary to convert to Base64 since it comes from Json
+                $("#ImgNft").attr("src", "data:image/jpeg;charset=utf-8;base64," + ui.item.data.image);
+                $("#InventoryModal").val(ui.item.data.quantity);
+
+                return false;
+            }
+        });
+    </script>
+
+
+
+    <script>
+
+        ////////////////////////////////////////////////////
+        // Busca el cliente por nombre+apellido1+apellido2 //
+        /////////////////////////////////////////////////////
+        $("#IdClient").autocomplete({
+            source: function (request, response) {
+                var IdClient = $("#IdClient").val();
+                //debugger;
+                console.log(IdClient);
+                $.ajax({
+                    type: "GET",
+                    url: "/Client/GetClientByName",
+                    dataType: "json",
+                    data: { filtro: IdClient },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            console.log(item);
+                            //debugger;
+                            console.log(item.id);
+                            return { label: item.name + " " + item.surname, value: item.id };
+                           
+
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        // xhr.requestText
+                        // debugger;
+                        console.log(error)
+                        alert("Error: " + error + ", No Error: " + xhr.status);
+                    },
+                });
+            },
+            select: function (event, ui) {
+
+                $("#IdClient").val(ui.item.value);
+                $("#ClientName").html(ui.item.label)
+
+                return false;
+            }
+        });
+    </script>
+
+
+    <script>
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        // Clear IdClient and ClientName when they got the focus                                 //
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        $("#IdClient").focus(function () {
+            // Limpia la caja de texto
+            $("#IdClient").val("");
+            $("#ClientName").html("*")
+        });
+    </script>
+
+
+    <script>
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        // Add cardshoping Product
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        function addProduct() {
+            let idNft = document.getElementById("IdNft").value;
+            let quantityModal = document.getElementById("quantityModal").value;
+            let priceModal = document.getElementById("PriceModal").value;
+            let deleteInvoiceDetail = document.getElementById("invoiceDetail");
+            let divInvoice = document.getElementById("invoiceDetailView");
+            console.log(idNft)
+            console.log(quantityModal)
+            console.log(priceModal)
+
+            let inventoryModal = document.getElementById("InventoryModal").value;
+
+
+
+         
+
+
+            // Clear dummy detail Card
+            document.getElementById("myCard").innerHTML = "";
+
+            // Validation
+            // if (idNft != null) {
+            //     Swal.fire({
+            //         title: "Error!",
+            //         text: "NFT code required!",
+            //         icon: "error"
+            //     });
+
+            //     return;
+            // }
+            // Validation
+            if ($.isNumeric(quantityModal) == false) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "NFT quantity required!",
+                    icon: "error"
+                });
+
+                return;
+            }
+
+
+            // Validation
+            if (parseInt(quantityModal) <= 0) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Quantity must be greater than 0!",
+                    icon: "error"
+                });
+                return;
+            }
+
+            // Validate stock?
+            if (parseInt(quantityModal) > parseInt(inventoryModal)) {
+
+                Swal.fire({
+                    title: "Error!",
+                    text: "NFT stock not available! ",
+                    icon: "error"
+                });
+                return;
+            }
+
+            const myRequest = "/Invoice/AddProduct?id=" + idNft + "&quantity=" + quantityModal
+
+            const options = {
+                method: 'GET'
+            }
+
+
+            fetch(myRequest, options)
+                .then(function (response) {
+                    // Error?
+                    if (!response.ok) {
+                        // console.log(response)
+                        // Get error from promise and throw a Error Object
+                        return response.text().then(text => { throw new Error(text) })
+                    }
+                    // everthing goes well!
+                    return response.text();
+                })
+                .then((text) => {
+                    //console.log(results)
+                    divInvoice.innerHTML = text
+                }).catch(error => {
+                    // show error
+                    Swal.fire({
+                        title: "Error",
+                        text: error,
+                        icon: "error"
+                    })
+
+                })
+
+
+            //deleteInvoiceDetail.remove()
+            // Clear fields
+            $("#IdNft").val("");
+            $("#PriceModal").val("");
+            $("#NftModal").html("");
+            $("#quantityModal").val("");
+            $("#InventoryModal").val("");
+
+            // Clear image... NoPhoto
+            $("#ImgNft").attr("src", "/Images/nophoto.jpg");
+
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        // Delete item from Cardshop
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        function deleteProduct(sequence) {
+            console.log("Delete " + sequence)
+            const divInvoice = document.getElementById("invoiceDetailView");
+            const myRequest = "/Invoice/DeleteProduct?id=" + sequence
+            const options = {
+                method: 'GET'
+            }
+            fetch(myRequest, options)
+                .then(function (response) {
+                    // Error?
+                    if (!response.ok) {
+                        // console.log(response)
+                        // Extraer error from promise and throw a Error Object
+                        return response.text().then(text => { throw new Error(text) })
+                    }
+                    // everthing goes well!
+                    return response.text();
+                })
+                .then((text) => {
+                    divInvoice.innerHTML = text
+
+                }).catch(error => {
+
+                    // show error
+                    Swal.fire({
+                        title: "Error",
+                        text: error,
+                        icon: "error"
+                    })
+
+                })
+        }
+
+    </script>
+
+
+
+    <!------------------------------------------------------------------------------------------------->
+    <!--Ajax control -->
+    <script>
+        function onBegin() {
+            console.log("onBegin");
+            document.getElementById("loader").className = "spinner";
+        }
+
+        function onFailure(response) {
+            console.log("onFailure");
+            document.getElementById("loader").className = "";
+            Swal.fire({
+                title: "Error!",
+                text: response.responseText,
+                icon: "error"
+            });
+        }
+
+        function onSuccess(response) {
+            console.log("onSuccess");
+            document.getElementById("loader").className = "";
+            // Reset form (clear all fields)
+            document.getElementById("myForm").reset();
+            // Clear
+            document.getElementById("ClientName").innerHTML = ""
+            // Delete table
+            document.getElementById("invoiceDetailView").innerHTML = ""
+
+            Swal.fire({
+                icon: "success",
+                title: "Invoice Saved ...",
+                showConfirmButton: false,
+                timer: 2000, // Aumenta el tiempo de visualización a 4000 milisegundos (4 segundos)
+                timerProgressBar: true // Muestra una barra de progreso que se llena conforme pasa el tiempo
+            }).then(() => {
+                // Después de que el usuario cierre el SweetAlert, recarga la página
+                location.reload();
+            });
+        }
+
+
+        function onComplete() {
+            console.log("Fin del proceso");
+            document.getElementById("loader").className = "";
+        }
+ 
+    </script>
+
+
+
+    <!-- Otros-->
+    <script>
+        function onClearForm() {
+
+            // Reset form (clear all fields)
+            document.getElementById("myForm").reset();
+            // Clear
+            document.getElementById("ClientName").innerHTML = ""
+            // Delete table
+            document.getElementById("invoiceDetailView").innerHTML = ""
+
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

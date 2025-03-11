@@ -1,0 +1,132 @@
+﻿@model IEnumerable<RareNFTs.Web.ViewModels.ViewModelInvoice>
+
+@{
+    ViewData["Title"] = "ListActives";
+}
+
+<h1>ListActives</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CardDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumCard)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name) @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CardDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumCard)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>                
+                
+                <td>
+                    <div class="group-buttons">
+                        <div class="btn-group">
+                            <button type="button" class="btn primary-btn rounded-full" onclick="deleteItem('@item.Id')">Cancel</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+        // debugger;
+        function deleteItem(id) {
+            console.log("Inicio")
+            Swal.fire({
+                title: 'Are you sure you want to cancel this Invoice?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No',
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    const myRequest = `/Invoice/Cancel?id=${id}`;
+                    fetch(myRequest, {
+                        method: 'POST'
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then((text) => {
+                            console.log(text);
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Success!',
+                                text: 'Invoice canceled successfully!',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true
+                            }).then(() => {
+                                // Reload the page only after showing the success Swal
+                                location.reload();
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            Swal.fire('Failed to cancel', 'The record cant be canceled', 'error');
+                        });
+
+                } else if (result.isDenied) {
+                    Swal.fire('Not Canceled!', '', 'info')
+                }
+            });
+        }
+
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

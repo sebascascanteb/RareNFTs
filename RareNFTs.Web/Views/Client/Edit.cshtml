@@ -1,0 +1,140 @@
+﻿@model RareNFTs.Application.DTOs.ClientDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ClientDTO</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-controller="Client" asp-antiforgery="true"
+              data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-begin="onBegin"
+              data-ajax-failure="onFailure"
+              data-ajax-success="onSuccess"
+              data-ajax-complete="onComplete">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" disabled />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span asp-validation-for="Genre" class="text-danger"></span>
+                <label asp-for="Genre" class="control-label">Genre</label>
+                <br />
+                <!--https://www.completecsharptutorial.com/asp-net-mvc5/html-radiobutton-and-html-radiobuttonfor-example-in-asp-net-mvc.php -->
+                @Html.RadioButtonFor(m => m.Genre, "Male", new { @value = "m" })  Male
+                | @Html.RadioButtonFor(m => m.Genre, "Female", new { @value = "f" })  Female
+                | @Html.RadioButtonFor(m => m.Genre, "Other", new { @value = "o" })  Other
+
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCountry" class="control-label"></label>
+                @Html.DropDownListFor(m => m.IdCountry,
+                         new SelectList(ViewBag.ListCountry, "Id", "Name"), new { @class = "form-select" })
+
+                <span asp-validation-for="IdCountry" class="text-danger"></span>
+            </div>
+            <div class="d-flex  align-content-center pt-4">
+
+                <button class="btn gradient-btn rounded-full" type="submit" value="Edit">Edit</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<div id="message"></div>
+<br />
+
+
+<div id="loader" class="spinnerx">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section scripts {
+
+
+    <script>
+        function onBegin() {
+            console.log("onBegin");
+            setTimeout(function () {
+                document.getElementById("loader").className = "spinner";
+
+                setTimeout(function () {
+                    window.location.href = "Index"; // Asegúrate de que esta ruta es correcta
+                }, 1000);
+            }, 1000);
+        }
+
+        function onFailure(response) {
+            console.log()
+
+            document.getElementById("loader").className = "";
+
+            document.getElementById("message").innerHTML = `<div class="alert alert-error-light d-flex align-items-center mt-4">
+                            <div class="alert-icon">
+                                <i class="lni lni-play"></i>
+                            </div>
+                            <div class="alert-message">
+                            <h5 class="message-title">Error</h5>
+                                <p class="text">
+                                 ${response}
+                                </p>
+                            </div>
+                        </div>`
+        }
+
+        function onSuccess(response) {
+            console.log("onSuccess");
+            Swal.fire({
+                icon: 'success',
+                title: '¡Success!',
+                text: 'Completed!',
+                showConfirmButton: false,
+                timer: 2000, // la alerta se cierra después de 1500 milisegundos (1.5 segundos)
+                timerProgressBar: true // muestra una barra de progreso que se llena conforme pasa el tiempo
+
+            });
+        }
+
+        function onComplete() {
+            console.log("onComplete")
+            // Se cambia el nombre del class al loader. Con esto se detiene el spinner
+            document.getElementById("loader").className = "";
+        }
+    </script>
+
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "SalesReport";
+}
+
+<form id="myForm"
+      asp-action="SalesReportPDF"
+      asp-controller="Report"
+      asp-antiforgery="true"
+      method="post"
+      asp-antiforgery="true">
+    <div class="card">
+
+        <div class="card-body">
+            <h5 class="card-title">Sales Report</h5>
+
+            <div class="mb-3 row">
+                <label class="col-form-label">Start Date</label>
+                <div class="col-sm-8">
+                    <input type="date" class="form-control" name="startDate">
+                </div>
+                <label class="col-form-label">End Date</label>
+                <div class="col-sm-8">
+                    <input type="date" class="form-control" name="endDate">
+                </div>
+                <button class="botao" type="submit">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mysvg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0">
+                        </g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g id="Interface / Download">
+                                <path id="Vector" d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke="#f1f1f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                    <span class="texto">Download</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+
